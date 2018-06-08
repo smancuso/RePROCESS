@@ -49,16 +49,22 @@ model1 <- function(Y,
                    digits = 4,
                    probe.p = .10,
                    mean.center = FALSE,
-                   se.HC = c("none", "HC0", "HC1", "HC2", "HC3", "HC4"),
+                   se.HC = "none",
                    x.multicat = FALSE,
-                   x.code = c("indicator", "sequential", "helmert", "effect"),
+                   x.code = "indicator",
                    w.multicat = FALSE,
-                   w.code = c("indicator", "sequential", "helmert", "effect"),
-                   cond.type = c("perc", "mean"),
+                   w.code = "indicator",
+                   cond.type = "perc",
                    JN = FALSE,
                    plot.JN = FALSE,
                    plot.int = FALSE,
                    data) {
+
+  # Default values for arguments with multiple options ----
+  se.HC <- match.arg(se.HC, c("none", "HC0", "HC1", "HC2", "HC3", "HC4"))
+  x.code <- match.arg(x.code, c("indicator", "sequential", "helmert", "effect"))
+  w.code <- match.arg(w.code, c("indicator", "sequential", "helmert", "effect"))
+  cond.type <- match.arg(cond.type, c("perc", "mean"))
 
   # Helper functions ----
   # Sequential coding
