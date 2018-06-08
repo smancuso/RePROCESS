@@ -1,0 +1,27 @@
+Package: RePROCESS
+Title: PROCESS (v3.0) Macro for R
+Version: 0.1.0
+Date: 2018-06-07	
+Author: Sam Mancuso [aut, cre]
+Maintainer: Sam Mancuso <sgmancuso@gmail.com>
+URL: http://www.sammancuso.com
+Description:
+	Implementation of the PROCESS mediation/moderation macro for R. Currently, limited to Model 1.
+	Note: Not endorsed by Andrew F. Hayes creator of PROCESS macro for SPSS and SAS.
+Depends:
+	R (>= 3.1.2),
+	dplyr (>= 0.7.0),
+	rlang (>= 0.2.1)
+Imports:
+	broom, 
+	graphics,
+	lmtest,
+	magrittr,
+	sandwich,
+	car,
+	haven
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Authors@R: person("Sam", "Mancuso", role = c("aut", "cre"), email = "sgmancuso@gmail.com")
