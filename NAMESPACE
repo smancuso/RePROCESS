@@ -3,6 +3,7 @@
 export(cond.effect)
 export(model1)
 import(dplyr)
+import(haven)
 import(rlang)
 importFrom(broom,tidy)
 importFrom(car,Anova)

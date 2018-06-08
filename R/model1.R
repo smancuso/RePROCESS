@@ -29,6 +29,7 @@
 #' @keywords PROCESS macro, Moderation, Conditional Effects, Model 1.
 #' @import dplyr
 #' @import rlang
+#' @import haven
 #' @importFrom broom tidy
 #' @importFrom car Anova
 #' @importFrom magrittr %>%
