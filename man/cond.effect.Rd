@@ -2,7 +2,11 @@
 % Please edit documentation in R/cond.effect.R
 \name{cond.effect}
 \alias{cond.effect}
+<<<<<<< HEAD
 \title{PROCESS (v3.0) Conditional Effects and Plots}
+=======
+\title{PROCESS (v3.0) Model 1 Conditional Effects and Plots}
+>>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
 \usage{
 cond.effect(mod, Y, X, W, CV, data, se.HC, ci, digits, x.type = c("bin",
   "multicat", "cont"), w.type = c("bin", "multicat", "cont"),
