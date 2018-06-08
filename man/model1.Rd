@@ -6,11 +6,9 @@
 \usage{
 model1(Y, X, W, CV = NULL, ci = 0.95, B = 5000, boot.inf = FALSE,
   seed = 1234, digits = 4, probe.p = 0.1, mean.center = FALSE,
-  se.HC = c("none", "HC0", "HC1", "HC2", "HC3", "HC4"), x.multicat = FALSE,
-  x.code = c("indicator", "sequential", "helmert", "effect"),
-  w.multicat = FALSE, w.code = c("indicator", "sequential", "helmert",
-  "effect"), cond.type = c("perc", "mean"), JN = FALSE, plot.JN = FALSE,
-  plot.int = FALSE, data)
+  se.HC = "none", x.multicat = FALSE, x.code = "indicator",
+  w.multicat = FALSE, w.code = "indicator", cond.type = "perc",
+  JN = FALSE, plot.JN = FALSE, plot.int = FALSE, data)
 }
 \arguments{
 \item{Y}{Dependent variable.}
@@ -43,7 +41,7 @@ model1(Y, X, W, CV = NULL, ci = 0.95, B = 5000, boot.inf = FALSE,
 
 \item{w.code}{Coding format for multicategorical \code{W}. Options are \code{c("indicator", "sequential", "helmert", "effect")}. Defaults to \code{"indicator"}.}
 
-\item{cond.type}{Conditioning values for \code{W}. Options are \code{"perc"} for percentiles (\code{.16, .50, .84}) or \code{"mean"} for \code{M, M +/- SD}. Defaults to \code{"perc"}.}
+\item{cond.type}{Conditioning values for \code{W}. Options are \code{"perc"} for percentiles (\code{(.16, .50, .84)}) or \code{"mean"} for \code{(M, M +/- SD)}. Defaults to \code{"perc"}.}
 
 \item{JN}{Calculates the Johnson-Neyman areas of statistical significance. Defaults to \code{FALSE}.}
 

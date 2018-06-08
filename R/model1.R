@@ -17,7 +17,7 @@
 #' @param mean.center Mean centre the predictors \code{X} and \code{W}. Defaults to \code{FALSE}.
 #' @param se.HC Use HC consistent standard errors. Options are: \code{c("none", "HC0", "HC1", "HC2", "HC3", "HC4")}. Defaults to \code{"none"}.
 #' @param p.probe Maximum \emph{p}-value of interaction term at which conditional effects should be probed. Defaults to \code{.10}.
-#' @param cond.type Conditioning values for \code{W}. Options are \code{"perc"} for percentiles (\code{.16, .50, .84}) or \code{"mean"} for \code{M, M +/- SD}. Defaults to \code{"perc"}.
+#' @param cond.type Conditioning values for \code{W}. Options are \code{"perc"} for percentiles (\code{(.16, .50, .84)}) or \code{"mean"} for \code{(M, M +/- SD)}. Defaults to \code{"perc"}.
 #' @param JN Calculates the Johnson-Neyman areas of statistical significance. Defaults to \code{FALSE}.
 #' @param plot.JN Plots the Johnson-Neyman areas of statistical significance. Defaults to \code{FALSE}.
 #' @param plot.int Plots the interaction plot. Defaults to \code{FALSE}.
@@ -49,16 +49,22 @@ model1 <- function(Y,
                    digits = 4,
                    probe.p = .10,
                    mean.center = FALSE,
-                   se.HC = c("none", "HC0", "HC1", "HC2", "HC3", "HC4"),
+                   se.HC = "none",
                    x.multicat = FALSE,
-                   x.code = c("indicator", "sequential", "helmert", "effect"),
+                   x.code = "indicator",
                    w.multicat = FALSE,
-                   w.code = c("indicator", "sequential", "helmert", "effect"),
-                   cond.type = c("perc", "mean"),
+                   w.code = "indicator",
+                   cond.type = "perc",
                    JN = FALSE,
                    plot.JN = FALSE,
                    plot.int = FALSE,
                    data) {
+
+  # Default values for arguments with multiple options ----
+  se.HC <- match.arg(se.HC, c("none", "HC0", "HC1", "HC2", "HC3", "HC4"))
+  x.code <- match.arg(x.code, c("indicator", "sequential", "helmert", "effect"))
+  w.code <- match.arg(w.code, c("indicator", "sequential", "helmert", "effect"))
+  cond.type <- match.arg(cond.type, c("perc", "mean"))
 
   # Helper functions ----
   # Sequential coding
