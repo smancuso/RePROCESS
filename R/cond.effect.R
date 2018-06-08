@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#' PROCESS (v3.0) Conditional Effects and Plots
-=======
-#' PROCESS (v3.0) Model 1 Conditional Effects and Plots
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
+#' PROCESS (v3.0) Conditional Effects and Plots for Model 1
 #'
 #' Implementation of the PROCESS (v3.0) Model 1 conditional effects based on Hayes (2018).
 #' Automatically generates interaction plots and Johnson-Neyman plots of areas of significance.
@@ -33,15 +29,9 @@
 #' @export cond.effect
 #' @references Hayes, A. F. (2018). \emph{Introduction to Mediation, Moderation, and Conditional Process Analysis} (2e). The Guilford Press: New York.
 
-<<<<<<< HEAD
 cond.effect <- function(mod,
                         Y, X, W, CV,
                         data, se.HC,
-=======
-cond.effect <- function(mod, 
-                        Y, X, W, CV,
-                        data, se.HC, 
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
                         ci, digits,
                         x.type = c("bin", "multicat", "cont"),
                         w.type = c("bin", "multicat", "cont"),
@@ -49,50 +39,29 @@ cond.effect <- function(mod,
                         plot.int = FALSE,
                         plot.JN = FALSE,
                         JN.req = FALSE) {
-<<<<<<< HEAD
 
   # Extract data from model
   data_model <- model.frame(mod)
 
-=======
-  
-  # Extract data from model
-  data_model <- model.frame(mod)
-  
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
   # Extract terms of interest (X and X:W)
   mod_sub <- mod %>%
     coeftest(., vcov. = vcovHC(., type = se.HC)) %>%
     tidy %>%
     filter(
-<<<<<<< HEAD
       term %in%
         grep(
           paste0(c(X, ":"), collapse = "|"),
-=======
-      term %in% 
-        grep(
-          paste0(c(X, ":"), collapse = "|"), 
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           term,
           value = TRUE
         )
     ) %>%
     select(term, estimate, std.error)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
   # Name of interaction term(s)
   int_term <- mod_sub %>%
     filter(term %in% grep(":", term, value = TRUE)) %>%
     pull(term)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
   # Get X term(s)
   x_term <- mod_sub %>%
     filter(
@@ -100,7 +69,6 @@ cond.effect <- function(mod,
         grep(X, term, value = TRUE),
         grep(":", term, value = TRUE, invert = TRUE)
       )
-<<<<<<< HEAD
     ) %>%
     pull(term)
 
@@ -110,22 +78,10 @@ cond.effect <- function(mod,
     # Binary W ----
     if (w.type == "bin") {
 
-=======
-    ) %>% 
-    pull(term)
-  
-  # Continuous X ----
-  if (x.type == "cont") {
-    
-    # Binary W ----
-    if (w.type == "bin") {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Get W-values
       cond_values <- data_model %>%
         pull(W) %>%
         unique
-<<<<<<< HEAD
 
       cond_values <- cond_values %>%
         as.vector
@@ -150,48 +106,17 @@ cond.effect <- function(mod,
       se_cond <- sqrt(Vb1 + (Vb3 * cond_values ^ 2) + (2 * Vb1b3 * cond_values))
     }
 
-=======
-      
-      cond_values <- cond_values %>% 
-        as.vector
-      
-      # Get beta values
-      b1 <- coef(mod)[X]
-      b3 <- coef(mod)[int_term]
-      
-      
-      # Get conditional effects
-      cond_effects <- b1 + cond_values * b3
-      
-      # Calculate Standard Errors for conditional effects
-      # Get variance-covariance matrix
-      mod_cov <- vcovHC(mod, type = se.HC)
-      
-      Vb1 <- mod_cov[X, X]
-      Vb3 <- mod_cov[int_term, int_term]
-      Vb1b3 <- mod_cov[X, int_term]
-      
-      # Create blank vector
-      se_cond <- sqrt(Vb1 + (Vb3 * cond_values ^ 2) + (2 * Vb1b3 * cond_values))
-    }
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Multicategorical W ----
     if (w.type == "multicat") {
       # Get beta coefficients
       b1 <- coef(mod)[X]
       bw <- coef(mod)[int_term]
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Get W levels
       W_levels <- data_model %>%
         pull(W) %>%
         levels %>%
         as.numeric
-<<<<<<< HEAD
 
       # Create contrast matrix
       cond_values <- contrasts(data_model[, W])
@@ -236,57 +161,10 @@ cond.effect <- function(mod,
     cond_values <- data_model %>%
       pull(W)
 
-=======
-      
-      # Create contrast matrix
-      cond_values <- contrasts(data_model[, W])
-      
-      # Use matrix multiplication to get conditional effects
-      cond_effects <- b1 + cond_values %*% as.matrix(bw) %>%
-        as.vector
-      
-      # Calculate Standard Errors for conditional effects
-      # Get number of categories
-      k <- length(cond_effects)
-      
-      # Get variance-covariance matrix
-      mod_cov <- vcovHC(mod, type = se.HC)  
-      
-      Vb1 <- mod_cov[X, X]
-      Vbw <-vector(mode = "numeric", length = k  - 1)
-      Vb1bw <-vector(mode = "numeric", length = k  - 1)
-      
-      for(i in 1:length(int_term)) {
-        
-        Vbw[i] <- mod_cov[int_term[i], int_term[i]]
-        Vb1bw[i] <- mod_cov[X, int_term[i]]
-        
-      }
-      
-      # SE of conditional values
-      se_cond <- sqrt(
-        Vb1 + 
-          rowSums(t(t(cond_values ^ 2) * Vbw)) + 
-          2 * rowSums(t(t(cond_values) * Vb1bw))
-      )
-      
-    }
-    
-  }
-  
-  # Continuous W ----
-  if (w.type == "cont") {
-    
-    # Get W-values
-    cond_values <- data_model %>%
-      pull(W)
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Conditioning values
     if (cond.type == "perc") {
       # Use percentiles. NB Does not correspond to SPSS percentiles.
       cond_values <- quantile(cond_values, c(.16, .50, .84))
-<<<<<<< HEAD
     }
 
     if (cond.type == "mean") {
@@ -294,37 +172,20 @@ cond.effect <- function(mod,
       # Check if M - 1SD is below minimum value of W
       if (mean(cond_values) - sd(cond_values) < min(cond_values)) {
 
-=======
-    } 
-    
-    if (cond.type == "mean") {
-      
-      # Check if M - 1SD is below minimum value of W
-      if (mean(cond_values) - sd(cond_values) < min(cond_values)) {
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         # Use minimum measurement of W instead
         cond_values <- c(
           min(cond_values),
           mean(cond_values),
           mean(cond_values) + sd(cond_values)
-<<<<<<< HEAD
         )
 
       } else {
 
-=======
-        )  
-        
-      } else {
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         cond_values <- c(
           mean(cond_values) - sd(cond_values),
           mean(cond_values),
           mean(cond_values) + sd(cond_values)
         )
-<<<<<<< HEAD
 
       }
     }
@@ -338,26 +199,10 @@ cond.effect <- function(mod,
     # Continuous or Binary X ----
     if (x.type %in% c("cont", "bin")) {
 
-=======
-        
-      }
-    }
-    
-    cond_values <- cond_values %>% 
-      unname
-    
-    # Set W-levels as conditioning values
-    W_levels <- cond_values
-    
-    # Continuous or Binary X ----
-    if (x.type %in% c("cont", "bin")) {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Get beta values
       # Get beta coefficients
       b1 <- coef(mod)[X]
       b3 <- coef(mod)[int_term]
-<<<<<<< HEAD
 
       # Get conditional effects
       cond_effects <- b1 + cond_values * b3
@@ -373,68 +218,31 @@ cond.effect <- function(mod,
       # Create blank vector
       se_cond <- sqrt(Vb1 + (Vb3 * cond_values ^ 2) + (2 * Vb1b3 * cond_values))
 
-=======
-      
-      # Get conditional effects
-      cond_effects <- b1 + cond_values * b3
-      
-      # Calculate Standard Errors for conditional effects
-      # Get variance-covariance matrix
-      mod_cov <- vcovHC(mod, type = se.HC)
-      
-      Vb1 <- mod_cov[X, X]
-      Vb3 <- mod_cov[int_term, int_term]
-      Vb1b3 <- mod_cov[X, int_term]
-      
-      # Create blank vector
-      se_cond <- sqrt(Vb1 + (Vb3 * cond_values ^ 2) + (2 * Vb1b3 * cond_values))
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # # Johnson-Neyman significance regions ----
       if (JN.req) {
         # Get critical t-value
         tcrit <- qt(1 - (1 - ci) / 2, mod$df.residual)
-<<<<<<< HEAD
 
         a <- tcrit ^ 2 * Vb3 - b3 ^ 2
         b <- 2 * (tcrit ^ 2 * Vb1b3 - b1 * b3)
         c <- tcrit ^ 2 * Vb1 - b1 ^ 2
 
-=======
-        
-        a <- tcrit ^ 2 * Vb3 - b3 ^ 2
-        b <- 2 * (tcrit ^ 2 * Vb1b3 - b1 * b3)
-        c <- tcrit ^ 2 * Vb1 - b1 ^ 2
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         jn <- c(
           (-b + sqrt(b ^ 2 - 4 * a * c))/ (2 * a),
           (-b - sqrt(b ^ 2 - 4 * a * c))/ (2 * a)
         ) %>%
           unname %>%
           sort
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         perc.below <- c(
           100 * sum(data_model %>% pull(W) < jn[1]) / nrow(data_model),
           100 * sum(data_model %>% pull(W) < jn[2]) / nrow(data_model)
         )
-<<<<<<< HEAD
 
         perc.above <- c(
           100 * sum(data_model %>% pull(W) > jn[1]) / nrow(data_model),
           100 * sum(data_model %>% pull(W) > jn[2]) / nrow(data_model))
 
-=======
-        
-        perc.above <- c(
-          100 * sum(data_model %>% pull(W) > jn[1]) / nrow(data_model),
-          100 * sum(data_model %>% pull(W) > jn[2]) / nrow(data_model))
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         jn_out <- data.frame(
           Value = jn,
           perc.below,
@@ -442,7 +250,6 @@ cond.effect <- function(mod,
         ) %>%
           round(., digits) %>%
           setNames(., c("Value", "% below", "% above"))
-<<<<<<< HEAD
 
         # Values of W
         W_data <- pull(data_model, W)
@@ -453,29 +260,13 @@ cond.effect <- function(mod,
           (max(W_data) - min(W_data) + 1) / 21
         )
 
-=======
-        
-        # Values of W
-        W_data <- pull(data_model, W)
-        
-        W_data <- seq(
-          min(W_data), 
-          max(W_data), 
-          (max(W_data) - min(W_data) + 1) / 21
-        )
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         # Insert jn values into W_data
         if (all(perc.above == 100) | all(perc.below == 100)) {
           W_data <- sort(W_data)
         } else {
           W_data <- sort(c(jn, W_data))
         }
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         # Create table to output JN results
         jn_cond_out <- tibble(
           !!sym(W) := W_data,
@@ -491,25 +282,16 @@ cond.effect <- function(mod,
       }
     }
   }
-<<<<<<< HEAD
 
   # Output Results ----------------------------------------------------------
   # Multicategorical X ----
   if (x.type == "multicat") {
 
-=======
-  
-  # Output Results ----------------------------------------------------------
-  # Multicategorical X ----
-  if (x.type == "multicat") {
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Print multicategorical X
     # Get X values
     X_values <- data_model %>%
       pull(X) %>%
       levels
-<<<<<<< HEAD
 
     # Create blank list to store conditional effects
     cond_effects <- vector(mode = "numeric", length = length(x_term))
@@ -521,19 +303,6 @@ cond.effect <- function(mod,
       data_temp <- data_model %>%
         mutate(!!sym(W) := !!sym(W) - cond_values[i])
 
-=======
-    
-    # Create blank list to store conditional effects
-    cond_effects <- vector(mode = "numeric", length = length(x_term))
-    
-    # Loop through conditioning values
-    for (i in 1:length(cond_values)) {
-      
-      # Centre W at conditioning values
-      data_temp <- data_model %>%
-        mutate(!!sym(W) := !!sym(W) - cond_values[i])
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Fit full model
       fit_full <- do.call(
         "lm",
@@ -542,50 +311,28 @@ cond.effect <- function(mod,
           data = data_temp
         )
       )
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Get HC-adjusted F-statistic
       # waldtest will not work, so a work-around with Anova from the 'car'
       # package is used
       comp_fit <- suppressMessages(
-<<<<<<< HEAD
         car::Anova(fit_full,
                    type = 3,
                    vcov. = vcovHC(fit_full, type = se.HC)
         )
       )
 
-=======
-        car::Anova(fit_full, 
-                   type = 3, 
-                   vcov. = vcovHC(fit_full, type = se.HC)
-        )
-      )
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Get residual df
       comp_fit_df_resid <- comp_fit %>%
         tidy %>%
         filter(term == "Residuals") %>%
         pull(df)
-<<<<<<< HEAD
 
       # Get df, F, and p for X
       comp_fit_x <- comp_fit %>%
         tidy %>%
         filter(term == X)
 
-=======
-      
-      # Get df, F, and p for X
-      comp_fit_x <- comp_fit %>%
-        tidy %>%
-        filter(term == X) 
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       comp_fit_out <- data.frame(
         "F.value" = comp_fit_x$statistic,
         df1 = comp_fit_x$df,
@@ -594,11 +341,7 @@ cond.effect <- function(mod,
       ) %>%
         round(., digits) %>%
         mutate(p = ifelse(p < .001, "<0.001", p))
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Conditional effects
       cond_effects <- fit_full %>%
         coeftest(., vcov. = vcovHC(., type = se.HC)) %>%
@@ -620,37 +363,23 @@ cond.effect <- function(mod,
         mutate(term = x_term) %>%
         select(term, Effect, se, t, p, LLCI, ULCI) %>%
         setNames(., c("", "Effect", "se", "t", "p", "LLCI", "ULCI"))
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Esitmated conditional means
       ecm_data <- tibble(
         !!sym(X) := X_values,
         !!sym(W) := cond_values[i]
       ) %>%
         as.data.frame
-<<<<<<< HEAD
 
       ecm <- predict(mod, newdata = ecm_data)
 
-=======
-      
-      ecm <- predict(mod, newdata = ecm_data)
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       ecm_out <- tibble(
         !!sym(X) := as.numeric(X_values),
         !!sym(Y) := ecm
       ) %>%
         as.data.frame %>%
         round(., digits)
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Print results to screen
       cat(
         "\n",
@@ -660,45 +389,27 @@ cond.effect <- function(mod,
         "\n",
         sep = ""
       )
-<<<<<<< HEAD
 
       print(cond_effects, row.names = FALSE)
 
-=======
-      
-      print(cond_effects, row.names = FALSE)
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       cat(
         "\n",
         "\n", "Test of conditional means",
         "\n",
         sep = ""
       )
-<<<<<<< HEAD
 
       print(comp_fit_out, row.names = FALSE)
 
-=======
-      
-      print(comp_fit_out, row.names = FALSE)
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       cat(
         "\n",
         "\n", "Estimated conditional means being compared:",
         "\n",
         sep = ""
       )
-<<<<<<< HEAD
 
       print(ecm_out, row.names = FALSE)
 
-=======
-      
-      print(ecm_out, row.names = FALSE)
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       cat(
         "----------------",
         "\n",
@@ -706,11 +417,7 @@ cond.effect <- function(mod,
       )
     }
   } else {
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     cond_out <- tibble(
       !!sym(W) := W_levels,
       Effect = cond_effects,
@@ -721,11 +428,7 @@ cond.effect <- function(mod,
         p = 2 * pt(-abs(t), df = mod$df.residual)
       ) %>%
       as.data.frame
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Output conditional effects
     cond_out <- cond_out %>%
       mutate(
@@ -734,11 +437,7 @@ cond.effect <- function(mod,
       ) %>%
       round(., digits) %>%
       as.data.frame
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     cat(
       "\n", "--------",
       "\n", "    Focal predictor: ", paste0(X, " (X)"),
@@ -749,7 +448,6 @@ cond.effect <- function(mod,
       "\n",
       sep = ""
     )
-<<<<<<< HEAD
 
     print(cond_out, row.names = FALSE)
 
@@ -767,30 +465,10 @@ cond.effect <- function(mod,
 
     } else {
 
-=======
-    
-    print(cond_out, row.names = FALSE)
-    
-  }
-  
-  # Print Johnson-Neyman Results (W must be continuous)
-  if (JN.req & w.type == "cont") {
-   
-  if (exists("jn_out")) {  
-     
-    if (all(perc.above == 100) | all(perc.below == 100)) {
-      cat("\n", "There are no statistical significance transition points within 
-          the observed range of the moderator found using the Johnson-Neyman method.\n",
-          sep = "")
-      
-    } else {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       cat(
         "\n", "Moderator value(s) defining Johnson-Neyman significance region(s):",
         "\n",
         sep = "")
-<<<<<<< HEAD
 
       print(jn_out, row.names = FALSE)
       }
@@ -798,21 +476,11 @@ cond.effect <- function(mod,
 
     if (exists("jn_cond_out")) {
 
-=======
-      
-      print(jn_out, row.names = FALSE)
-      }
-    }
-    
-    if (exists("jn_cond_out")) {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       cat(
         "\n", "Conditional effect of focal predictor at values of the moderator:",
         "\n",
         sep = ""
       )
-<<<<<<< HEAD
 
       print(jn_cond_out, row.names = FALSE)
 
@@ -824,24 +492,10 @@ cond.effect <- function(mod,
   # Interaction plots ----
   if (plot.int) {
 
-=======
-      
-      print(jn_cond_out, row.names = FALSE)
-      
-    }
-    
-  }
-  
-# Plots -------------------------------------------------------------------
-  # Interaction plots ----
-  if (plot.int) {
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Extract data to plot
     Yplot <- pull(data_model, Y)
     Xplot <- pull(data_model, X)
     Wplot <- pull(data_model, W)
-<<<<<<< HEAD
 
     # Continuous W ----
     if (w.type == "cont") {
@@ -849,15 +503,6 @@ cond.effect <- function(mod,
       # Binary or multicategorical X ----
       if(x.type %in% c("bin", "multicat")) {
 
-=======
-    
-    # Continuous W ----
-    if (w.type == "cont") {
-      
-      # Binary or multicategorical X ----
-      if(x.type %in% c("bin", "multicat")) {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         plot(
           range(Wplot),
           range(predict(mod)),
@@ -865,7 +510,6 @@ cond.effect <- function(mod,
           xlab = paste0(W, " (W)"),
           ylab = paste0(Y, " (Y)")
         )
-<<<<<<< HEAD
 
         # Check if X is a factor
         if (class(Xplot) %in% "factor") {
@@ -885,42 +529,16 @@ cond.effect <- function(mod,
         # Generate new data for plotting
         for (i in seq_along(X_unique)) {
 
-=======
-        
-        # Check if X is a factor
-        if (class(Xplot) %in% "factor") {
-          
-          X_unique <- Xplot %>% 
-            levels %>%
-            sort
-          
-        } else {
-          
-          X_unique <- sort(unique(Xplot))
-        }
-        
-        # Vectorise legend text
-        legend_text <- vector(mode = "character", length = length(X_unique))
-        
-        # Generate new data for plotting
-        for (i in seq_along(X_unique)) {
-          
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           newdata <- tibble(
             !!sym(X) := X_unique[i],
             !!sym(W) := range(Wplot[Xplot == X_unique[i]])
           ) %>%
             as.data.frame
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           # Set variable classe for X
           if (class(Xplot) == "factor") {
             newdata[, X] <- factor(newdata[, X])
           }
-<<<<<<< HEAD
 
           if (!is.null(CV)) {
 
@@ -928,21 +546,11 @@ cond.effect <- function(mod,
               # Extract covariate data
               CVplot <- pull(data_model, CV[j])
 
-=======
-        
-          if (!is.null(CV)) {
-            
-            for (j in 1:length(CV)) {
-              # Extract covariate data
-              CVplot <- pull(data_model, CV[j])
-              
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
               # Create covariate
               newdata <- newdata %>%
                 mutate(!!sym(CV[j]) := CVplot[Xplot == X_unique[i]]) %>%
                 as.data.frame
             }
-<<<<<<< HEAD
 
           }
 
@@ -954,19 +562,6 @@ cond.effect <- function(mod,
 
         }
 
-=======
-            
-          } 
-          
-          # Plot line
-          lines(pull(newdata, W), predict(mod, newdata), lty = i)
-          
-          # Add legend text
-          legend_text[i] <- paste0(X, " = ", X_unique[i], " (X", i, ")")
-          
-        }
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         # Add legend to plot
         legend(
           "topleft",
@@ -974,19 +569,11 @@ cond.effect <- function(mod,
           legend = legend_text,
           cex = .60
         )
-<<<<<<< HEAD
 
       }
 
       if (x.type == "cont") {
 
-=======
-        
-      }
-      
-      if (x.type == "cont") {
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         plot(
           range(Xplot),
           range(predict(mod)),
@@ -994,22 +581,14 @@ cond.effect <- function(mod,
           xlab = paste0(X, " (X)"),
           ylab = paste0(Y, " (Y)")
         )
-<<<<<<< HEAD
 
         # Generate new data for plotting
         for (i in seq_along(unique(cond_values))) {
 
-=======
-        
-        # Generate new data for plotting
-        for (i in seq_along(unique(cond_values))) {
-          
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           newdata <- cbind(
             unique(Wplot)[i],
             range(Xplot[Wplot == cond_values[i]])
           )
-<<<<<<< HEAD
 
           if (!is.null(CV)) {
 
@@ -1018,22 +597,11 @@ cond.effect <- function(mod,
               # Temporary CV
               CVplot <- pull(data_model, CV[j])
 
-=======
-          
-          if (!is.null(CV)) {
-            
-            for (j in 1:length(CV)) {
-              
-              # Temporary CV
-              CVplot <- pull(data_model, CV[j])
-              
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
               newdata <- cbind(
                 newdata,
                 range(CVplot[Wplot == cond_values[i]])
               )
             }
-<<<<<<< HEAD
 
           }
 
@@ -1048,36 +616,14 @@ cond.effect <- function(mod,
         # Legend Text
         if(cond.type == "perc") {
 
-=======
-            
-          } 
-          
-          newdata <- newdata %>%
-            as.data.frame %>%
-            setNames(., c(W, X, CV))
-          
-          lines(pull(newdata, X), predict(mod, newdata), lty = i)
-          
-        }
-        
-        # Legend Text
-        if(cond.type == "perc") {
-          
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           legend_text <- c(
             paste0(W, " = ", round(cond_values[1], digits), " (W = 16th perc)"),
             paste0(W, " = ", round(cond_values[2], digits), " (W = 50th perc)"),
             paste0(W, " = ", round(cond_values[3], digits), " (W = 84th perc)")
           )
-<<<<<<< HEAD
 
         } else {
 
-=======
-          
-        } else {
-          
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
           legend_text <- c(
             ifelse(
               mean(Wplot) - sd(Wplot) < min(Wplot),
@@ -1088,18 +634,13 @@ cond.effect <- function(mod,
             paste0(W, " = ", round(cond_values[3], digits), " (W = M + 1SD)")
           )
         }
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         legend(
           "topleft",
           lty = seq_along(unique(Wplot)),
           legend = legend_text,
           cex = .60
         )
-<<<<<<< HEAD
 
       }
     }
@@ -1107,15 +648,6 @@ cond.effect <- function(mod,
     # Continuous X and binary or multicategorical W
     if (w.type %in% c("bin", "multicat") & x.type == "cont") {
 
-=======
-        
-      }
-    }
-    
-    # Continuous X and binary or multicategorical W
-    if (w.type %in% c("bin", "multicat") & x.type == "cont") {
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       plot(
         range(Xplot),
         range(predict(mod)),
@@ -1123,7 +655,6 @@ cond.effect <- function(mod,
         xlab = paste0(X, " (X)"),
         ylab = paste0(Y, " (Y)")
       )
-<<<<<<< HEAD
 
       # Check if X is a factor
       if (class(Wplot) %in% "factor") {
@@ -1143,42 +674,16 @@ cond.effect <- function(mod,
       # Generate new data for plotting
       for (i in seq_along(W_unique)) {
 
-=======
-      
-      # Check if X is a factor
-      if (class(Wplot) %in% "factor") {
-        
-        W_unique <- Wplot %>% 
-          levels %>%
-          sort
-        
-      } else {
-        
-        W_unique <- sort(unique(Wplot))
-      }
-      
-      # Vectorise legend text
-      legend_text <- vector(mode = "character", length = length(W_unique))
-      
-      # Generate new data for plotting
-      for (i in seq_along(W_unique)) {
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         newdata <- tibble(
           !!sym(W) := W_unique[i],
           !!sym(X) := range(Xplot[Wplot == W_unique[i]])
         ) %>%
           as.data.frame
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
         # Set variable classe for X
         if (class(Wplot) == "factor") {
           newdata[, W] <- factor(newdata[, W])
         }
-<<<<<<< HEAD
 
         if (!is.null(CV)) {
 
@@ -1186,21 +691,11 @@ cond.effect <- function(mod,
             # Extract covariate data
             CVplot <- pull(data_model, CV[j])
 
-=======
-        
-        if (!is.null(CV)) {
-          
-          for (j in 1:length(CV)) {
-            # Extract covariate data
-            CVplot <- pull(data_model, CV[j])
-            
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
             # Create covariate
             newdata <- newdata %>%
               mutate(!!sym(CV[j]) := CVplot[Wplot == W_unique[i]]) %>%
               as.data.frame
           }
-<<<<<<< HEAD
 
         }
 
@@ -1212,19 +707,6 @@ cond.effect <- function(mod,
 
       }
 
-=======
-          
-        } 
-        
-        # Plot line
-        lines(pull(newdata, X), predict(mod, newdata), lty = i)
-        
-        # Add legend text
-        legend_text[i] <- paste0(W, " = ", W_unique[i], " (W", i, ")")
-        
-      }
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
       # Add legend to plot
       legend(
         "topleft",
@@ -1232,7 +714,6 @@ cond.effect <- function(mod,
         legend = legend_text,
         cex = .60
       )
-<<<<<<< HEAD
 
     }
 
@@ -1241,16 +722,6 @@ cond.effect <- function(mod,
   # Johnson-Neyman plot ----
   if (all(plot.JN, JN.req)) {
 
-=======
-      
-    }
-    
-  }
-  
-  # Johnson-Neyman plot ----
-  if (all(plot.JN, JN.req)) {
-    
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     # Generate JN plot
     plot(
       x = W_data, y = jn_cond_out$Effect,
@@ -1259,25 +730,14 @@ cond.effect <- function(mod,
       ylab = paste0("Conditional effect of ", X, " (X) on ", Y, " (Y)"),
       xlim = c(min(W_data), max(W_data)),
       ylim = c(min(jn_cond_out$LLCI), max(jn_cond_out$ULCI))
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
     )
     points(W_data, jn_cond_out$LLCI, lwd = 2, lty = 2, type = "l")
     points(W_data, jn_cond_out$ULCI, lwd = 2, lty = 2, type = "l")
     abline(h = 0, untf = FALSE, lty = 3, lwd = 1)
     abline(v = jn[1], untf = FALSE, lty = 3,lwd = 1)
     abline(v = jn[2], untf = FALSE, lty = 3, lwd = 1)
-<<<<<<< HEAD
 
   }
 
 }
-=======
-    
-  }
-  
-}
->>>>>>> 9e76bd4e4815d2734ed981c0213391342b33b27b
