@@ -189,7 +189,7 @@ cond.effect <- function(mod,
         )
 
       } else {
-
+        # Use maximum measurement of W instead
         cond_values <- c(
           mean(cond_values) - sd(cond_values),
           mean(cond_values),
