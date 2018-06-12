@@ -163,8 +163,8 @@ cond.effect <- function(mod,
 
     # Conditioning values
     if (cond.type == "perc") {
-      # Use percentiles. NB Does not correspond to SPSS percentiles.
-      cond_values <- quantile(cond_values, c(.16, .50, .84))
+      # Use percentiles. Type = 6 corresponds to SPSS percentiles.
+      cond_values <- quantile(cond_values, c(.16, .50, .84), type = 6)
     }
 
     if (cond.type == "mean") {
@@ -348,8 +348,7 @@ cond.effect <- function(mod,
         df2 = comp_fit_df_resid,
         p = comp_fit_x$p.value
       ) %>%
-        round(., digits) %>%
-        mutate(p = ifelse(p < .001, "<0.001", p))
+        round(., digits)
 
       # Conditional effects
       cond_effects <- fit_full %>%
@@ -368,7 +367,6 @@ cond.effect <- function(mod,
           ULCI = Effect + se * qt(1 - ((1 - ci) / 2), fit_full$df.residual)
         ) %>%
         round(., digits) %>%
-        mutate(p = ifelse(p < .001, "<0.001", p)) %>%
         mutate(term = x_term) %>%
         select(term, Effect, se, t, p, LLCI, ULCI) %>%
         setNames(., c("", "Effect", "se", "t", "p", "LLCI", "ULCI"))

@@ -307,7 +307,6 @@ model1 <- function(Y,
     round(., digits) %>%
     mutate(term = model_terms) %>%
     select(term, estimate, std.error, statistic, p.value, LLCI, ULCI) %>%
-    mutate(p.value = ifelse(p.value < .001, "<0.001", p.value)) %>%
     setNames(., c("", "coeff", "se", "t", "p", "LLCI", "ULCI"))
 
   # Model Summary
@@ -320,8 +319,7 @@ model1 <- function(Y,
     df2 = fit_int_anova[1, 1],
     p = fit_int_anova[2, 4]
   ) %>%
-    round(., digits) %>%
-    mutate(p = ifelse(p < .001, "<0.001", p))
+    round(., digits)
 
   # Interaction Summary
   int_summary <- data.frame(
@@ -332,7 +330,6 @@ model1 <- function(Y,
     p = comp_fit[2, 4]
   ) %>%
     round(digits) %>%
-    mutate(p = ifelse(p < .001, "<0.001", p)) %>%
     mutate(term = paste0(X, " x ", W)) %>%
     select(term, R2.change, F.value, df1, df2, p) %>%
     setNames(., c("", "R2.change", "F.value", "df1", "df2", "p"))
