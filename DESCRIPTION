@@ -4,7 +4,7 @@ Version: 0.1.0
 Date: 2018-06-07	
 Author: Sam Mancuso [aut, cre]
 Maintainer: Sam Mancuso <sgmancuso@gmail.com>
-URL: http://www.sammancuso.com
+URL: http://www.sammancuso.com/reprocess
 Description:
 	Implementation of the PROCESS mediation/moderation macro for R. Currently, limited to Model 1.
 	Note: Not endorsed by Andrew F. Hayes creator of PROCESS macro for SPSS and SAS.
