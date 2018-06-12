@@ -49,22 +49,29 @@ model1 <- function(Y,
                    digits = 4,
                    probe.p = .10,
                    mean.center = FALSE,
-                   se.HC = "none",
+                   se.HC = c("none", "HC0", "HC1", "HC2", "HC3", "HC4"),
                    x.multicat = FALSE,
-                   x.code = "indicator",
+                   x.code = c("indicator", "sequential", "helmert", "effect"),
                    w.multicat = FALSE,
-                   w.code = "indicator",
-                   cond.type = "perc",
+                   w.code = c("indicator", "sequential", "helmert", "effect"),
+                   cond.type = c("perc", "mean", "custom"),
+                   cond.custom = NULL,
                    JN = FALSE,
                    plot.JN = FALSE,
                    plot.int = FALSE,
                    data) {
 
   # Default values for arguments with multiple options ----
+  se.HC <- ifelse(length(se.HC) > 1, se.HC[1], se.HC)
+  x.code <- ifelse(length(x.code) > 1, x.code[1], x.code)
+  w.code <- ifelse(length(w.code) > 1, w.code[1], w.code)
+  cond.type <- ifelse(length(cond.type) > 1, cond.type[1], cond.type)
+
+  # Check Arguments
   se.HC <- match.arg(se.HC, c("none", "HC0", "HC1", "HC2", "HC3", "HC4"))
   x.code <- match.arg(x.code, c("indicator", "sequential", "helmert", "effect"))
   w.code <- match.arg(w.code, c("indicator", "sequential", "helmert", "effect"))
-  cond.type <- match.arg(cond.type, c("perc", "mean"))
+  cond.type <- match.arg(cond.type, c("perc", "mean", "custom"))
 
   # Helper functions ----
   # Sequential coding
@@ -333,8 +340,8 @@ model1 <- function(Y,
   # Output Results ----
   cat(
     "\n", "---------------------------------------------------------------------",
-    "\n", "PROCESS Procedure for R Version 0.1",
-    "\n", "Based on SPSS Macro by Andrew F. Hayes  www.afhayes.com",
+    "\n", "RePROCESS Procedure for R Version 0.1",
+    "\n", "Based on SPSS/SAS PROCESS Macro by Andrew F. Hayes  www.afhayes.com",
     "\n", "Coded by Sam Mancuso   sammancuso.com",
     "\n", "---------------------------------------------------------------------",
     "\n", "Model : 1",
@@ -558,12 +565,19 @@ model1 <- function(Y,
 
       if (mean(W_temp) - sd(W_temp) < min(W_temp)) {
 
-        W_message <- "W values in conditional tables are the minimum, mean and 1 SD above the mean.
+        W_message <- "\nW values in conditional tables are the minimum, mean, and 1 SD above the mean.
 
 Note: One SD below the mean is below the minimum observed in the data for W,
       so the minimum measurement on W is used for conditioning instead.\n"
 
-      } else{
+      } else if (mean(W_temp) + sd(W_temp) > max(W_temp)) {
+
+        W_message <- "\nW values in conditional tables are the 1 SD below the mean, mean, and maximum.
+
+        Note: One SD above the mean is above the maximum observed in the data for W,
+        so the maximum measurement on W is used for conditioning instead.\n"
+
+      } else {
 
         W_message <- "\nW values in conditional tables are the mean and +/- SD from the mean.\n"
 

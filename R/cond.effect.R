@@ -179,6 +179,15 @@ cond.effect <- function(mod,
           mean(cond_values) + sd(cond_values)
         )
 
+      } else if (mean(cond_values) + sd(cond_values) > max(cond_values)) {
+
+        # Use minimum measurement of W instead
+        cond_values <- c(
+          mean(cond_values) - sd(cond_values),
+          mean(cond_values),
+          max(cond_values)
+        )
+
       } else {
 
         cond_values <- c(

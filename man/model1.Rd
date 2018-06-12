@@ -6,8 +6,10 @@
 \usage{
 model1(Y, X, W, CV = NULL, ci = 0.95, B = 5000, boot.inf = FALSE,
   seed = 1234, digits = 4, probe.p = 0.1, mean.center = FALSE,
-  se.HC = "none", x.multicat = FALSE, x.code = "indicator",
-  w.multicat = FALSE, w.code = "indicator", cond.type = "perc",
+  se.HC = c("none", "HC0", "HC1", "HC2", "HC3", "HC4"), x.multicat = FALSE,
+  x.code = c("indicator", "sequential", "helmert", "effect"),
+  w.multicat = FALSE, w.code = c("indicator", "sequential", "helmert",
+  "effect"), cond.type = c("perc", "mean", "custom"), cond.custom = NULL,
   JN = FALSE, plot.JN = FALSE, plot.int = FALSE, data)
 }
 \arguments{
