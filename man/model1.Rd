@@ -2,7 +2,7 @@
 % Please edit documentation in R/model1.R
 \name{model1}
 \alias{model1}
-\title{PROCESS (v3.0) Model 1}
+\title{RePROCESS Model 1}
 \usage{
 model1(Y, X, W, CV = NULL, ci = 0.95, B = 5000, boot.inf = FALSE,
   seed = 1234, digits = 4, probe.p = 0.1, mean.center = FALSE,

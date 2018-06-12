@@ -1,4 +1,4 @@
-#' PROCESS (v3.0) Model 1
+#' RePROCESS Model 1
 #'
 #' Implementation of the PROCESS (v3.0) Model 1 for moderation and conditional effects based on Hayes (2018).
 #' Automatically generates interaction plots and Johnson-Neyman plots of areas of significance.
