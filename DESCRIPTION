@@ -1,5 +1,5 @@
 Package: RePROCESS
-Title: PROCESS (v3.0) Macro for R
+Title: Mediation, Moderation, and Conditional Process Analysis for R
 Version: 0.1.0
 Date: 2018-06-07	
 Author: Sam Mancuso [aut, cre]
@@ -11,7 +11,7 @@ Description:
 Depends:
 	R (>= 3.1.2),
 	dplyr (>= 0.7.0),
-	rlang (>= 0.2.1),
+	rlang (>= 0.2.0),
 	haven (>= 1.0.0)
 Imports:
 	broom, 
